@@ -1,6 +1,6 @@
 # Requirements
-1. Provides a reliable [DDNS] (Dynamic DNS) service to multiple customers
-1. Uses all standard [Azure] resources
+1. Provides a public-facing, reliable [DDNS] (Dynamic DNS) service to multiple customers
+1. Uses standard [Azure] resources
 1. Can be monetized via [Microsoft Marketplace] to cover costs
 1. Provides a simple [Azure Portal] interface to allow [DDNS] domains to defined per-customer
     1. Optionally limits domains based on tiered pricing

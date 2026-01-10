@@ -1,0 +1,27 @@
+@page "/domains"
+@inject IDdnsApiClient Api
+
+<h3>Your Domains</h3>
+
+@if (domains == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var d in domains)
+        {
+            <li>@d.Fqdn (@d.IpAddress)</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<DomainDto>? domains;
+
+    protected override async Task OnInitializedAsync()
+    {
+        domains = await Api.GetDomainsAsync();
+    }
+}

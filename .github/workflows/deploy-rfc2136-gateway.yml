@@ -1,0 +1,103 @@
+name: Deploy RFC2136 Gateway to AKS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "charts/rfc2136-gateway/**"
+      - ".github/workflows/deploy-rfc2136-gateway.yml"
+  workflow_dispatch:
+
+env:
+  CHART_PATH: charts/rfc2136-gateway
+  RELEASE_NAME: rfc2136-gateway
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AZURE_RG }}
+          cluster-name: ${{ secrets.AZURE_AKS_NAME }}
+
+      - name: Helm Upgrade (DEV)
+        run: |
+          helm upgrade --install ${{ env.RELEASE_NAME }} \
+            ${{ env.CHART_PATH }} \
+            --namespace ddns \
+            --create-namespace \
+            --set image.repository=${{ secrets.AZURE_ACR_NAME }}.azurecr.io/rfc2136-gateway \
+            --set image.tag=latest \
+            --set service.loadBalancerIP=${{ secrets.AZURE_RFC2136_LB_IP }}
+
+  deploy-stage:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    environment: stage
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AZURE_RG }}
+          cluster-name: ${{ secrets.AZURE_AKS_NAME }}
+
+      - name: Helm Upgrade (STAGE)
+        run: |
+          helm upgrade --install ${{ env.RELEASE_NAME }} \
+            ${{ env.CHART_PATH }} \
+            --namespace ddns \
+            --create-namespace \
+            --set image.repository=${{ secrets.AZURE_ACR_NAME }}.azurecr.io/rfc2136-gateway \
+            --set image.tag=latest \
+            --set service.loadBalancerIP=${{ secrets.AZURE_RFC2136_LB_IP }}
+
+  deploy-prod:
+    needs: deploy-stage
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AZURE_RG }}
+          cluster-name: ${{ secrets.AZURE_AKS_NAME }}
+
+      - name: Helm Upgrade (PROD)
+        run: |
+          helm upgrade --install ${{ env.RELEASE_NAME }} \
+            ${{ env.CHART_PATH }} \
+            --namespace ddns \
+            --create-namespace \
+            --set image.repository=${{ secrets.AZURE_ACR_NAME }}.azurecr.io/rfc2136-gateway \
+            --set image.tag=latest \
+            --set service.loadBalancerIP=${{ secrets.AZURE_RFC2136_LB_IP }}

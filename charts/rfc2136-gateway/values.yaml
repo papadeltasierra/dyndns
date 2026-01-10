@@ -1,0 +1,33 @@
+replicaCount: 2
+
+image:
+  repository: youracr.azurecr.io/rfc2136-gateway
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  annotations: {}
+  loadBalancerIP: ""   # Set to pip-ddns-rfc2136-prod
+  ports:
+    tcp: 53
+    udp: 53
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+config:
+  logLevel: "Information"
+  dnsZone: "ddns.yourcompany.com"
+
+secrets:
+  tsigKey: ""   # Optional if using Key Vault CSI

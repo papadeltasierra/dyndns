@@ -1,0 +1,6 @@
+dotnet new sln -n Ddns
+dotnet sln add src/Ddns.Api/Ddns.Api.csproj
+dotnet sln add src/Ddns.Portal/Ddns.Portal.csproj
+dotnet sln add src/Ddns.Shared/Ddns.Shared.csproj
+dotnet sln add tests/Ddns.Api.Tests/Ddns.Api.Tests.csproj
+dotnet sln add tests/Ddns.Portal.Tests/Ddns.Portal.Tests.csproj
