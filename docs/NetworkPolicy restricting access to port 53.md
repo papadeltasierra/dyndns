@@ -6,6 +6,31 @@ This policy ensures:
 - All other pod‑to‑pod traffic on port 53 is blocked.
 - Both TCP and UDP are enforced (RFC2136 uses both).
 
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rfc2136-gateway-restrict-port53
+  namespace: ddns
+spec:
+  podSelector:
+    matchLabels:
+      app: rfc2136-gateway
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        # Allow traffic only from pods with this label
+        - podSelector:
+            matchLabels:
+              allow-rfc2136: "true"
+      ports:
+        - protocol: TCP
+          port: 53
+        - protocol: UDP
+          port: 53
+```
+
 You can drop this directly into your Helm chart or apply it standalone.
 
 ## How to Use This Policy

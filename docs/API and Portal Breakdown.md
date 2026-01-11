@@ -1,4 +1,6 @@
 # API Project by Copilot
+> !!PDS: This appears to be incomplete.  Can we recover it?
+
 1. API Project (Ddns.Api)
 - A minimal, modern ASP.NET Core Web API using:
 - Minimal APIs or Controllers (your choice)

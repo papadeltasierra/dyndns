@@ -1,5 +1,8 @@
 # Build and Push Docker Images to ACR
 ## Required GitHub Secrets (per environment)
+
+`.github/workflows/docker-build-push.yml`
+
 |Secret|	Description|
 |-|-|
 |AZURE_CREDENTIALS|	JSON from az ad sp create-for-rbac --sdk-auth|
