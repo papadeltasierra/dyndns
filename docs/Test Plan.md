@@ -1,0 +1,31 @@
+# Test Plan
+
+- SaaS sign-up
+    - Test to test the bit I write
+- Azure auth update
+    - Test success and all failure arms
+    - IPv4, IPv6 and both (possible?)
+- Azure token update
+    - Test success and all failure arms
+    - Test both tokens (allowing token rotation)
+    - IPv4, IPv6 and both (possible?)
+- RFC2136 – not doing for now
+- Website
+    - Test login successful and failed
+    - Test simple domain creation
+    - Test create domain that already exists
+        - User owns domain, someone else owns domain
+    - Test create domain over domain limit
+        - Ensure directs to upgrade SaaS subscription
+    - Show domain but never updated
+        - Ensure all details are sensible
+    - Domain with IPv4, IPv6, both addresses
+        - Ensure dates are sensible
+    - Manual update of domain
+    - Domain deletion
+    - Domain creation after deletion at limit
+        - Do we support soft delete?
+        - Can we force hard delete?
+        - How do we recover a deleted domain?
+        - Can we mark domains as “inactive?”
+- Logging of all things – where?  Sufficient?
