@@ -1,0 +1,52 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  API_IMAGE: ddns-api
+  PORTAL_IMAGE: ddns-portal
+  DOCKERFILE_API: src/Ddns.Api/Dockerfile
+  DOCKERFILE_PORTAL: src/Ddns.Portal/Dockerfile
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: ACR Login
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az acr login --name ${{ secrets.AZURE_ACR_NAME }}
+
+      - name: Build API Image
+        run: |
+          docker build \
+            -t ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.API_IMAGE }}:latest \
+            -f ${{ env.DOCKERFILE_API }} .
+
+      - name: Build Portal Image
+        run: |
+          docker build \
+            -t ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.PORTAL_IMAGE }}:latest \
+            -f ${{ env.DOCKERFILE_PORTAL }} .
+
+      - name: Push API Image
+        run: |
+          docker push ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.API_IMAGE }}:latest
+
+      - name: Push Portal Image
+        run: |
+          docker push ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.PORTAL_IMAGE }}:latest
